@@ -1,10 +1,7 @@
 const express = require("express");
-// const joi = require("joi");
 const contacts = require("../../models/contacts");
-
-const { HttpError } = require("../../helpers");
-
 const Joi = require("joi");
+const { HttpError } = require("../../helpers");
 
 const router = express.Router();
 
@@ -18,7 +15,6 @@ router.get("/", async (req, res, next) => {
   try {
     const result = await contacts.listContacts();
     res.json(result);
-    // res.json({ message: "template message" });
   } catch (error) {
     next(error);
   }
@@ -48,7 +44,6 @@ router.post("/", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  // res.json({ message: "template message" });
 });
 
 router.delete("/:contactId", async (req, res, next) => {
@@ -62,7 +57,6 @@ router.delete("/:contactId", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  // res.json({ message: "template message" });
 });
 
 router.put("/:contactId", async (req, res, next) => {
@@ -83,8 +77,6 @@ router.put("/:contactId", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
-  // res.json({ message: "template message" });
 });
 
 module.exports = router;
