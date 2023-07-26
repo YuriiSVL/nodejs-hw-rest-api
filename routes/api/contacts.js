@@ -5,12 +5,9 @@ const router = express.Router();
 const ctrl = require("../../controllers/contacts");
 const { isValidId, authenticate, validateBody } = require("../../middlewares");
 
-// const schemas = require("../../schemas/contacts");
 const { schemas } = require("../../models/contact");
 
 router.get("/", authenticate, ctrl.listContacts);
-
-router.get("/:contactId", authenticate, isValidId, ctrl.getContactById);
 
 router.post(
   "/",
@@ -36,5 +33,9 @@ router.patch(
   validateBody(schemas.updateFavoriteSchema, "missing field favorite"),
   ctrl.updateFavorite
 );
+
+router.patch("/users", authenticate);
+
+router.get("/:contactId", authenticate, isValidId, ctrl.getContactById);
 
 module.exports = router;
