@@ -34,8 +34,6 @@ router.patch(
   ctrl.updateFavorite
 );
 
-router.patch("/users", authenticate);
-
 router.get("/:contactId", authenticate, isValidId, ctrl.getContactById);
 
 module.exports = router;
