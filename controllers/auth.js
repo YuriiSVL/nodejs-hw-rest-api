@@ -74,7 +74,6 @@ const updateSubscription = async (req, res) => {
   });
 
   if (!result) {
-    console.log(_id);
     throw HttpError(404, "Not found");
   }
   res.status(200).json(result);

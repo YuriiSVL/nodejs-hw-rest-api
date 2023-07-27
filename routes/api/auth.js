@@ -25,7 +25,7 @@ router.post("/logout", authenticate, ctrl.logout);
 router.patch(
   "/",
   authenticate,
-  validateBody(schemas.updateSubscriptionSchema, "wrong field"),
+  validateBody(schemas.updateSubscriptionSchema, "wrong request"),
   ctrl.updateSubscription
 );
 
