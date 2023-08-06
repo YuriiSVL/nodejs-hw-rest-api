@@ -1,9 +1,15 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs/promises");
 const gravatar = require("gravatar");
+var jimp = require("jimp");
+
 const { User } = require("../models/user");
 const { HttpError, ctrlWrapper } = require("../helpers");
+
 const { SECRET_KEY } = process.env;
+const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -84,10 +90,37 @@ const updateSubscription = async (req, res) => {
   return result;
 };
 
+const uploadAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tmpUpload, originalname } = req.file;
+  const filename = `${_id}_${originalname}`;
+  const resultUpload = path.join(avatarDir, filename);
+  await fs.rename(tmpUpload, resultUpload);
+  const avatarUrl = path.join("avatars", filename);
+  console.log(req.file);
+
+  // Jimp.read(avatarUrl, (err, image) => {
+  //   if (err) throw err;
+  //   image
+  //     .resize(256, 256) // resize
+  //     .quality(60) // set JPEG quality
+  //     .greyscale() // set greyscale
+  //     .write("lena-small-bw.jpg"); // save
+  // });
+
+  const result = await User.findByIdAndUpdate(_id, { avatarUrl });
+
+  if (!result) {
+    throw new Error(401, "Not authorized");
+  }
+  res.status(200).json({ avatarUrl });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
+  uploadAvatar: ctrlWrapper(uploadAvatar),
 };
