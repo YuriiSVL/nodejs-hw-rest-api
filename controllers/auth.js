@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs/promises");
 const gravatar = require("gravatar");
-var jimp = require("jimp");
+const jimp = require("jimp");
 
 const { User } = require("../models/user");
 const { HttpError, ctrlWrapper } = require("../helpers");
@@ -93,20 +93,24 @@ const updateSubscription = async (req, res) => {
 const uploadAvatar = async (req, res) => {
   const { _id } = req.user;
   const { path: tmpUpload, originalname } = req.file;
+
   const filename = `${_id}_${originalname}`;
   const resultUpload = path.join(avatarDir, filename);
+
+  await jimp
+    .read(tmpUpload)
+    .then((image) => {
+      return image
+        .resize(256, 256) // resize
+        .quality(60) // set JPEG quality
+        .write(tmpUpload); // save
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
   await fs.rename(tmpUpload, resultUpload);
   const avatarUrl = path.join("avatars", filename);
-  console.log(req.file);
-
-  // Jimp.read(avatarUrl, (err, image) => {
-  //   if (err) throw err;
-  //   image
-  //     .resize(256, 256) // resize
-  //     .quality(60) // set JPEG quality
-  //     .greyscale() // set greyscale
-  //     .write("lena-small-bw.jpg"); // save
-  // });
 
   const result = await User.findByIdAndUpdate(_id, { avatarUrl });
 
