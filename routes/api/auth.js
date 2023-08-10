@@ -11,6 +11,15 @@ router.post(
   validateBody(schemas.registerSchema, "wrong register field"),
   ctrl.register
 );
+
+router.get("/verify/:verificationToken", ctrl.verifyEmail);
+
+router.post(
+  "/verify",
+  validateBody(schemas.emailSchema, "missing required field email"),
+  ctrl.resendVerifyEmail
+);
+
 // signin
 router.post(
   "/login",

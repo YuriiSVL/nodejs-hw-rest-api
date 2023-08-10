@@ -28,8 +28,6 @@ const transport = nodemailer.createTransport(nodemailerConfig);
 //   .catch((error) => console.log(error.message));
 
 const sendEmail = async (data) => {
-  console.log(META_PASSWORD);
-  console.log(transport);
   const email = { ...data, from: "giksigrek@meta.ua" };
   await transport.sendMail(email);
 };
